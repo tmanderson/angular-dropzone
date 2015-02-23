@@ -1,4 +1,41 @@
-# DROPZONE
-#### Drag and Drop. Really, that's it.
+# DROPZONE - Simple drag and drop that works.
+Angular directive for simple drag and drop functionality.
 
-Simple drag and drop angular module. Really, that's all this is -- and it works, too.
+## Install
+`$> bower install angular-dropzone`
+
+## Usage
+Two attributes are all ya need.
+
+---
+**ATTRIBUTE** `droppable` - a draggable element that can be dropped into a
+`dropzone`
+
+**ATTRIBUTE** `dropzone` - an element in which `droppable` elements can be placed (by dragging).
+
+
+```html
+<div class="col-sm-4" dropzone>
+    <div droppable>
+        Draggable Item 1
+    </div>
+</div>
+
+<div class="col-sm-4" dropzone>
+    <div droppable>
+        Draggable Item 2
+    </div>
+    <div droppable>
+        Draggable Item 4
+    </div>
+</div>
+
+<div class="col-sm-4" dropzone>
+    <div droppable>
+        Draggable Item 5
+    </div>
+    <div droppable>
+        Draggable Item 6
+    </div>
+</div>
+```
