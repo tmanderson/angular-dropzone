@@ -2,7 +2,7 @@
 Angular directive for simple drag and drop functionality.
 
 ## Install
-`$> bower install angular-dropzone`
+`$> bower install angular-ui-dropzone`
 
 ## Usage
 Two attributes are all ya need.
