@@ -18,7 +18,7 @@ angular.module('ui.dropzone', [])
       }
     }
   })
-  .run(function(utils) {
+  .run([ 'utils', function(utils) {
     var closest = utils.closest;
     var zone, dragged, displaced, displacedRect;
 
@@ -102,8 +102,8 @@ angular.module('ui.dropzone', [])
 
       zone = displaced = displacedRect = dragged = null;
     });
-  })
-  .directive('droppable', function(utils) {
+  }])
+  .directive('droppable', ['utils', function(utils) {
     return {
       restrict: 'A',
       link: function(scope, element) {
@@ -112,12 +112,12 @@ angular.module('ui.dropzone', [])
         element[0]._dropzone = utils.closest(element[0], '[dropzone]');
       }
     };
-  })
-  .directive('dropzone', function() {
+  }])
+  .directive('dropzone', ['utils', function() {
     return {
       restrict: 'A',
       link: function(scope, element) {
         var el = element[0];
       }
     };
-  });
+  }]);
