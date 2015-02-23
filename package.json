@@ -1,5 +1,5 @@
 {
-  "name": "ui-dropzone",
+  "name": "angular-ui-dropzone",
   "version": "0.1.0",
   "description": "Simple Angular drag and drop",
   "main": "index.html",
