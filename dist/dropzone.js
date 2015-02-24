@@ -147,25 +147,29 @@ angular.module('ui.dropzone', [])
         var el = element[0];
 
         element.on('dropzone-add', function(e) {
+          var detail = e.detail || e.originalEvent.detail;
+
           element.children().removeClass('dropzone-displaced');
-          scope.$emit('dropzone-add', e.detail);
+          scope.$emit('dropzone-add', detail);
           scope.$apply(function(scope) {
-            scope.model.splice(e.detail.index, 0, e.detail.data[0]);
+            scope.model.splice(detail.index, 0, detail.data[0]);
           });
         });
 
         element.on('dropzone-remove', function(e) {
+          var detail = e.detail || e.originalEvent.detail;
+
           var addEvent = new CustomEvent('dropzone-add', {
             bubbles: true,
             cancelable: true,
             detail: {
-              index: e.detail.toIndex,
-              data: scope.model.splice(e.detail.fromIndex, 1)
+              index: detail.toIndex,
+              data: scope.model.splice(detail.fromIndex, 1)
             }
           });
 
-          scope.$emit('dropzone-remove', e.detail);
-          e.detail.dropzone.dispatchEvent(addEvent);
+          scope.$emit('dropzone-remove', detail);
+          detail.dropzone.dispatchEvent(addEvent);
         });
       }
     };
