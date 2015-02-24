@@ -148,6 +148,7 @@ angular.module('ui.dropzone', [])
 
         element.on('dropzone-add', function(e) {
           element.children().removeClass('dropzone-displaced');
+          scope.$emit('dropzone-add', e.detail);
           scope.$apply(function(scope) {
             scope.model.splice(e.detail.index, 0, e.detail.data[0]);
           });
@@ -159,11 +160,11 @@ angular.module('ui.dropzone', [])
             cancelable: true,
             detail: {
               index: e.detail.toIndex,
-              data: scope.model.splice(e.detail.fromIndex, 1),
-              apply: e.detail.dropzone === element
+              data: scope.model.splice(e.detail.fromIndex, 1)
             }
           });
 
+          scope.$emit('dropzone-remove', e.detail);
           e.detail.dropzone.dispatchEvent(addEvent);
         });
       }
