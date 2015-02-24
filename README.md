@@ -7,39 +7,23 @@ Angular directive for simple drag and drop functionality.
 ## Usage
 Two attributes are all ya need.
 
----
-**ATTRIBUTE** `droppable` - a draggable element that can be dropped into a
-`dropzone`
+### Attribute `dropzone`
+Designates the element as a "droppable zone". Any `droppable` element can be dropped here.
 
-**ATTRIBUTE** `dropzone` - an element in which `droppable` elements can be placed (by dragging).
+### Attribute `ng-model` (optional)
+Add this to a `dropzone` element in which to track the items. Various models will remain in sync, no worries there
+
+### ATTRIBUTE `droppable`
+**Must be a `dropzone` descendant** - a draggable element that can be dropped into a `dropzone`
 
 
 ```html
-<div class="col-sm-4" dropzone>
-    <div droppable>
-        Draggable Item 1
-    </div>
-</div>
-
-<div class="col-sm-4" dropzone>
-    <div droppable>
-        Draggable Item 2
-    </div>
-    <div droppable>
-        Draggable Item 4
-    </div>
-</div>
-
-<div class="col-sm-4" dropzone>
-    <div droppable>
-        Draggable Item 5
-    </div>
-    <div droppable>
-        Draggable Item 6
+<div class="col" ng-repeat="col in columns" ng-model="col" dropzone>
+    <div ng-repeat="item in col" droppable>
+        <h4>{{item.name}}</h4>
     </div>
 </div>
 ```
 
-## COMING SOON
-- Events...yeah, you need those
+## TODO
 - More layout controls (reduce immediate child node dependencies)

@@ -30,7 +30,8 @@ angular.module('ui.dropzone', [])
       if(displacedRect.top + displacedRect.height/2 < e.pageY) {
         displaced.classList.remove('dropzone-displaced');
         if(displaced.nextElementSibling === dragged) return;
-        displaced = displaced.nextElementSibling || null;
+        //  keep displaced value if no sibling to displace (used when dropping)
+        displaced = displaced.nextElementSibling || displaced;
         displacedRect = displaced && displaced.getBoundingClientRect() || null;
         return displaced && displaced.classList.add('dropzone-displaced');
       }
@@ -44,9 +45,7 @@ angular.module('ui.dropzone', [])
       dragged = e.target;
     });
 
-    document.addEventListener('dragend', function(e) {
-      
-    });
+    document.addEventListener('dragend', function(e) {});
 
     document.addEventListener('dragover', function(e) {
       e.preventDefault();
@@ -87,6 +86,7 @@ angular.module('ui.dropzone', [])
     document.addEventListener('dragleave', function(e) {
       var zone = closest(e.target, '[dropzone]');
       if(!zone) return;
+
       var droppables = zone.querySelectorAll('[droppable]');
       for(var i = 0; i < droppables.length; i++) {
         droppables[i].classList.remove('dropzone-displaced');
@@ -94,15 +94,35 @@ angular.module('ui.dropzone', [])
     });
 
     document.addEventListener('drop', function(e) {
-      if(displaced) {
-        displaced.parentNode.insertBefore(dragged, displaced);
-        displaced.classList.remove('dropzone-displaced');
-      }
-      //  if no displaced, append
-      else {
-        zone.appendChild(dragged);
+      var oldListEls = closest(dragged, '[dropzone]').children;
+      var newListEls = zone.children;
+      var i, fromIndex, toIndex;
+
+      for(i = 0; i < oldListEls.length; i++) {
+        if(oldListEls[i] === dragged) fromIndex = i;
       }
 
+      for(i = 0; i < newListEls.length; i++) {
+        if(newListEls[i] === displaced) {
+          toIndex = i;
+          break;
+        }
+        if(i === newListEls.length-1) toIndex = i+1;
+      }
+      
+      var removedEvent = new CustomEvent('dropzone-remove', {
+        bubbles: true,
+        cancelable: true,
+        detail: {
+          fromIndex: fromIndex,
+          toIndex: toIndex,
+          dropzone: zone
+        }
+      });
+
+      dragged.dispatchEvent(removedEvent);
+
+      if(displaced) displaced.classList.remove('dropzone-displaced');
       zone = displaced = displacedRect = dragged = null;
     });
   }])
@@ -111,6 +131,7 @@ angular.module('ui.dropzone', [])
       restrict: 'A',
       link: function(scope, element) {
         var el = element[0];
+
         element.attr('draggable', true);
         element[0]._dropzone = utils.closest(element[0], '[dropzone]');
       }
@@ -119,8 +140,32 @@ angular.module('ui.dropzone', [])
   .directive('dropzone', ['utils', function() {
     return {
       restrict: 'A',
+      scope: {
+        model: '=ngModel'
+      },
       link: function(scope, element) {
         var el = element[0];
+
+        element.on('dropzone-add', function(e) {
+          element.children().removeClass('dropzone-displaced');
+          scope.$apply(function(scope) {
+            scope.model.splice(e.detail.index, 0, e.detail.data[0]);
+          });
+        });
+
+        element.on('dropzone-remove', function(e) {
+          var addEvent = new CustomEvent('dropzone-add', {
+            bubbles: true,
+            cancelable: true,
+            detail: {
+              index: e.detail.toIndex,
+              data: scope.model.splice(e.detail.fromIndex, 1),
+              apply: e.detail.dropzone === element
+            }
+          });
+
+          e.detail.dropzone.dispatchEvent(addEvent);
+        });
       }
     };
   }]);

@@ -37,13 +37,11 @@
 	<script src="src/dropzone.js"></script>
 	<script src="test/app.js"></script>
 </head>
-<body ng-app="TestDropZone">
-	<div class="col" dropzone>
-		<div droppable><h2>1</h2><span><span></div>
-	</div>
-	<div class="col" dropzone>
-		<div droppable><h2>2</h2><span><span></div>
-		<div droppable><h2>3</h2><span><span></div>
+<body ng-app="DropzoneTest" ng-controller="DropzoneTestCtrl">
+	<div class="col" ng-repeat="col in columns" ng-model="col" dropzone>
+		<div ng-repeat="item in col" droppable>
+			<h4>{{item.name}}</h4>
+		</div>
 	</div>
 </body>
 </html>
